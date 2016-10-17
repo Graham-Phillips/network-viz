@@ -1,0 +1,19 @@
+body {
+ font-family: Arial, Helvetica, sans-serif;
+}
+
+.topbar {
+  display: inline;
+}
+
+.topbargroup {
+  margin-left: 10px;
+}
+
+.depthinput {
+  width: 40px;
+}
+
+.clearbutton {
+  margin-left: 50px;
+}

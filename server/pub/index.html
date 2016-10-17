@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+    <head>
+      <title>surfin spider</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" type="text/css" href="./styles.css"/>
+    </head>
+    <body>
+      <div class="topbar">
+        <span>URL:</span>
+        <input class="urlinput" type="url" placeholder="www.example.com" autocomplete="on" autofocus="true"></input>
+        <button class="navitem submitbutton">Go</button>
+        <span class="navitem">Search Depth:</span>
+        <input class="depthinput" type="number" step="1"  value="3" min="0" max="9"></input>
+        <button class="navitem clearbutton" type="button">Clear</button>
+      </div>
+      <div id="displayPanel"></div>
+    </body>
+    <script src="js/bundle.js" charset="utf-8"></script>
+</html>
