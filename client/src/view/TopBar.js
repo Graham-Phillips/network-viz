@@ -11,14 +11,14 @@ class TopBar {
     document.getElementsByClassName('navitem submitbutton')[0].addEventListener('click', (event => {
       var inputField = document.getElementsByClassName('urlinput')[0];
       var url = inputField.value;
-      if(this._validateURL(url))
-      {
+      // if(this._validateURL(url))
+      // {
         this._submitValidatedData(url);
-      }
-      else
-      {
-        inputField.value = "";
-      }
+      // }
+      // else
+      // {
+      //   inputField.value = "";
+      // }
     }), false);
   }
 
@@ -30,7 +30,7 @@ class TopBar {
   // url was valid, reset UI
   _submitValidatedData(url)
   {
-    this._service.getLinks(url , document.getElementsByClassName('depthinput')[0].value)
+    this._service.getLinkGraph(url , document.getElementsByClassName('depthinput')[0].value)
   }
 
   _handleCallStatusUpdate(event)

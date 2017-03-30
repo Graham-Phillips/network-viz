@@ -102,11 +102,14 @@
 	    document.getElementsByClassName('navitem submitbutton')[0].addEventListener('click', function (event) {
 	      var inputField = document.getElementsByClassName('urlinput')[0];
 	      var url = inputField.value;
-	      if (_this._validateURL(url)) {
-	        _this._submitValidatedData(url);
-	      } else {
-	        inputField.value = "";
-	      }
+	      // if(this._validateURL(url))
+	      // {
+	      _this._submitValidatedData(url);
+	      // }
+	      // else
+	      // {
+	      //   inputField.value = "";
+	      // }
 	    }, false);
 	  }
 
@@ -122,7 +125,7 @@
 	  }, {
 	    key: '_submitValidatedData',
 	    value: function _submitValidatedData(url) {
-	      this._service.getLinks(url, document.getElementsByClassName('depthinput')[0].value);
+	      this._service.getLinkGraph(url, document.getElementsByClassName('depthinput')[0].value);
 	    }
 	  }, {
 	    key: '_handleCallStatusUpdate',
@@ -201,10 +204,9 @@
 
 	      try {
 	        for (var _iterator = this._listeners[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var _step$value = _slicedToArray(_step.value, 2);
-
-	          var key = _step$value[0];
-	          var value = _step$value[1];
+	          var _step$value = _slicedToArray(_step.value, 2),
+	              key = _step$value[0],
+	              value = _step$value[1];
 
 	          if (value === event.type) {
 	            key(event);
@@ -348,7 +350,7 @@
 	    _classCallCheck(this, SpiderService);
 
 	    this._xhrDefs = {
-	      getLinks: {
+	      getLinkGraph: {
 	        method: "POST",
 	        url: "spider-api",
 	        timeout: 3000,
@@ -373,25 +375,26 @@
 	      this._panel = panel;
 	    }
 	  }, {
-	    key: "getLinks",
-	    value: function getLinks(url, depth) {
+	    key: "getLinkGraph",
+	    value: function getLinkGraph(url, depth) {
+	      console.log("getLinkGraph: url=" + url);
 	      var request = new XMLHttpRequest(),
-	          myTimer = null;
-	      request.open(this._xhrDefs.getLinks.method, this._xhrDefs.getLinks.url, this._xhrDefs.getLinks.async);
+	          timeoutID = null;
+	      request.open(this._xhrDefs.getLinkGraph.method, this._xhrDefs.getLinkGraph.url, this._xhrDefs.getLinkGraph.async);
 	      // Register the error and success handlers
 	      request.onreadystatechange = function () {
 	        if (request.readyState === 4) {
-	          if (myTimer !== null) {
-	            clearTimeout(myTimer);
+	          if (timeoutID !== null) {
+	            clearTimeout(timeoutID);
 	          }
 	          // If there's an error, call the error callback,
 	          // Otherwise call the success callback.
 	          if (request.status !== 200 && request.status !== 304) {
-	            if (this._xhrDefs.getLinks.errorCallback != null) {
-	              this._xhrDefs.getLinks.errorCallback(request);
+	            if (this._xhrDefs.getLinkGraph.errorCallback != null) {
+	              this._xhrDefs.getLinkGraph.errorCallback(request);
 	            }
 	          } else {
-	            this._xhrDefs.getLinks.successCallback(request);
+	            this._xhrDefs.getLinkGraph.successCallback(request);
 	          }
 	        }
 	      }.bind(this);
@@ -400,12 +403,12 @@
 	      // timeout property and register the timeout callback.
 	      // If not, we have to set a start running that will execute the
 	      // timeout callback. We can cancel the timer if/when the server responds.
-	      if (this._xhrDefs.getLinks.timeout !== null) {
+	      if (this._xhrDefs.getLinkGraph.timeout !== null) {
 	        if (typeof request.ontimeout !== "undefined") {
-	          request.timeout = this._xhrDefs.getLinks.timeout;
-	          request.ontimeout = this._xhrDefs.getLinks.timeoutCallback;
+	          request.timeout = this._xhrDefs.getLinkGraph.timeout;
+	          request.ontimeout = this._xhrDefs.getLinkGraph.timeoutCallback;
 	        } else {
-	          myTimer = setTimeout(this._xhrDefs.getLinks.timeoutCallback, this._xhrDefs.getLinks.timeout);
+	          timeoutID = setTimeout(this._xhrDefs.getLinkGraph.timeoutCallback, this._xhrDefs.getLinkGraph.timeout);
 	        }
 	      }
 	      // Send the request
@@ -414,7 +417,7 @@
 	      var data = {};
 	      data.url = url;
 	      data.depth = depth;
-
+	      console.log("sending :" + data.url + " , " + data.depth);
 	      request.send(JSON.stringify(data));
 	    }
 	  }, {

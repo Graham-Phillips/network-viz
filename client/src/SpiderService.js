@@ -4,7 +4,7 @@ class SpiderService
   constructor()
   {
     this._xhrDefs = {
-      getLinks : {
+      getLinkGraph : {
         method : "POST",
         url : "spider-api",
         timeout: 3000,
@@ -28,11 +28,12 @@ class SpiderService
     this._panel = panel;
   }
 
-  getLinks(url, depth)
+  getLinkGraph(url, depth)
   {
+    console.log("getLinkGraph: url=" + url);
     let request = new XMLHttpRequest(),
     timeoutID = null;
-    request.open(this._xhrDefs.getLinks.method, this._xhrDefs.getLinks.url, this._xhrDefs.getLinks.async);
+    request.open(this._xhrDefs.getLinkGraph.method, this._xhrDefs.getLinkGraph.url, this._xhrDefs.getLinkGraph.async);
     // Register the error and success handlers
     request.onreadystatechange = function() {
       if (request.readyState === 4) {
@@ -42,11 +43,11 @@ class SpiderService
         // If there's an error, call the error callback,
         // Otherwise call the success callback.
         if ((request.status !== 200) && (request.status !== 304)) {
-          if (this._xhrDefs.getLinks.errorCallback != null) {
-            this._xhrDefs.getLinks.errorCallback(request);
+          if (this._xhrDefs.getLinkGraph.errorCallback != null) {
+            this._xhrDefs.getLinkGraph.errorCallback(request);
           }
         } else {
-          this._xhrDefs.getLinks.successCallback(request);
+          this._xhrDefs.getLinkGraph.successCallback(request);
         }
       }
     }.bind(this);
@@ -55,12 +56,12 @@ class SpiderService
     // timeout property and register the timeout callback.
     // If not, we have to set a start running that will execute the
     // timeout callback. We can cancel the timer if/when the server responds.
-    if (this._xhrDefs.getLinks.timeout !== null) {
+    if (this._xhrDefs.getLinkGraph.timeout !== null) {
       if (typeof request.ontimeout !== "undefined") {
-        request.timeout = this._xhrDefs.getLinks.timeout;
-        request.ontimeout = this._xhrDefs.getLinks.timeoutCallback;
+        request.timeout = this._xhrDefs.getLinkGraph.timeout;
+        request.ontimeout = this._xhrDefs.getLinkGraph.timeoutCallback;
       } else {
-        timeoutID = setTimeout(this._xhrDefs.getLinks.timeoutCallback, this._xhrDefs.getLinks.timeout);
+        timeoutID = setTimeout(this._xhrDefs.getLinkGraph.timeoutCallback, this._xhrDefs.getLinkGraph.timeout);
       }
     }
     // Send the request
@@ -69,7 +70,7 @@ class SpiderService
     let data = {};
     data.url = url;
     data.depth = depth;
-
+console.log("sending :" + data.url + " , " + data.depth);
     request.send(JSON.stringify(data));
 
   }

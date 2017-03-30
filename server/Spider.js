@@ -4,12 +4,12 @@ class Spider {
     this.crawler = null;
   }
 
-  crawl(startURI, callback, depth=2) {
+  crawl(startURI, depth=2, callback) {
     if(!this.crawler)
     {
       var Crawler = require("simplecrawler");
       this.crawler = new Crawler(startURI);
-      this.initialiseCrawler(crawler, depth);
+      this.initialiseCrawler(this.crawler, depth);
     }
 
     this.crawler.start();
@@ -18,18 +18,21 @@ class Spider {
 
   initialiseCrawler(crawler, depth) {
 
-    crawler.parseHTMLComments = false;
-    crawler.parseScriptTags = false;
-    crawler.maxDepth = depth;
-    crawler.interval = 250;
-    crawler.maxConcurrency = 5;
-    crawler.allowInitialDomainChange = true;
-    crawler.filterByDomain = false;
-    crawler.scanSubdomains = true;
-    crawler.downloadUnsupported = false;
+    this.crawler.parseHTMLComments = false;
+    this.crawler.parseScriptTags = false;
+    this.crawler.maxDepth = depth;
+    this.crawler.interval = 750; // may beed to increase to avoid server problems
+    this.crawler.maxConcurrency = 3;
+    this.crawler.allowInitialDomainChange = true;
+    this.crawler.filterByDomain = false;
+    this.crawler.scanSubdomains = true;
+    this.crawler.downloadUnsupported = false
+    this.crawler.timeout=10000;
+    this.crawler.decodeResponses=true; // char conversion to std javascript
 
-    crawler.on("fetchcomplete", function(queueItem, responseBuffer, response)
+    this.crawler.on("fetchcomplete", function(queueItem, responseBuffer, response)
     {
+      console.log("fetchcomplete:", response);
     //   var continue = this.wait();
     //     doSomeDiscovery(data, function(foundURLs) {
     //         foundURLs.forEach(crawler.queueURL.bind(crawler));
@@ -37,21 +40,22 @@ class Spider {
     //     });
     });
 
-    crawler.on("complete", function(queueItem, responseBuffer, response) {
-      console.log("response:", response);
+    this.crawler.on("complete", function(queueItem, responseBuffer, response) {
+      console.log("on complete, response:", response);
     });
 
-    crawler.on("queueadd", function(queueItem) {
-
+    this.crawler.on("queueadd", function(queueItem) {
+      console.log("queueadd");
     });
 
-    crawler.discoverResources = function(buffer, queueItem) {
+    this.crawler.discoverResources = function(buffer, queueItem) {
+      // simplecrawler's default resource discovery func given a buffer containing a resource, returns an array of URLs
         console.log(buffer.toString("utf8"));
-        // var $ = cheerio.load(buffer.toString("utf8"));
-        //
-        // return $("a[href]").map(function () {
-        //     return $(this).attr("href");
-        // }).get();
+        var $ = cheerio.load(buffer.toString("utf8"));
+
+        return $("a[href]").map(function () {
+            return $(this).attr("href");
+        }).get();
     };
   }
 
